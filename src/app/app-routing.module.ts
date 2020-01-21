@@ -8,13 +8,15 @@ import { LoginFormComponent } from "./features/login-form/login-form.component";
 import { ArticleFormComponent } from "./features/article-form/article-form.component";
 import { NotFoundComponent } from "./features/not-found/not-found.component";
 
-
-const routes: Routes = [
-  { path: "", component: ArticlesListComponent , pathMatch: "full" },
+const itemRoutes: Routes = [
   { path: "detail/:id", component: ArticleDetailComponent },
   { path: "login", component: LoginFormComponent },
   { path: "form", component: ArticleFormComponent },
-  { path: "form/:id", component: ArticleFormComponent },
+  { path: "form/:id", component: ArticleFormComponent }];
+
+const routes: Routes = [
+  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent , pathMatch: "full" },
+  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent , children: itemRoutes },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '404' }
 ];
