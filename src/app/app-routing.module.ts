@@ -15,7 +15,7 @@ const itemRoutes: Routes = [
   { path: "form/:id", component: ArticleFormComponent }];
 
 const routes: Routes = [
-  { path: "", component: ArticlesListComponent , pathMatch: "full" },
+  { path: "", component: ArticlesListComponent },
   { path: "", component: ArticlesListComponent , children: itemRoutes },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '404' }
