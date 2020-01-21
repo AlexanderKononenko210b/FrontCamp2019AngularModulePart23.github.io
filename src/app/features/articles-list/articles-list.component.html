@@ -1,0 +1,15 @@
+<app-menu></app-menu>
+<app-header [title]="title"></app-header>
+<app-options 
+        (onSourceChange)="onSourceChange($event)"
+        (onFilterChange)="onFilterChange($event)"
+        (onFilterClick)="onFilterClick()"
+        (onCheckedByMe)="onCheckedByMe($event)"
+        [sources]="sources">
+</app-options>
+<ul *ngFor="let article of articles;">
+        <app-article [article]="article"></app-article>
+</ul>
+<app-load-more (onLoadMore)="onLoadMore()"></app-load-more>
+<app-footer></app-footer>
+
