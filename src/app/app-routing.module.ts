@@ -15,8 +15,8 @@ const itemRoutes: Routes = [
   { path: "form/:id", component: ArticleFormComponent }];
 
 const routes: Routes = [
-  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent , pathMatch: "full" },
-  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent , children: itemRoutes },
+  { path: "", component: ArticlesListComponent , pathMatch: "full" },
+  { path: "", component: ArticlesListComponent , children: itemRoutes },
   { path: '404', component: NotFoundComponent },
   { path: '**', redirectTo: '404' }
 ];
