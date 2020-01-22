@@ -17,12 +17,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/FrontCamp2019AngularModulePart23",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
+            "baseHref": "/FrontCamp2019AngularModulePart23.github.io",
             "assets": [
               "src/favicon.ico",
               "src/assets"

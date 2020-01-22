@@ -8,17 +8,17 @@ import { LoginFormComponent } from "./features/login-form/login-form.component";
 import { ArticleFormComponent } from "./features/article-form/article-form.component";
 import { NotFoundComponent } from "./features/not-found/not-found.component";
 
-const itemRoutes: Routes = [
-  { path: "detail/:id", component: ArticleDetailComponent },
-  { path: "login", component: LoginFormComponent },
-  { path: "form", component: ArticleFormComponent },
-  { path: "form/:id", component: ArticleFormComponent }];
-
 const routes: Routes = [
-  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent },
-  { path: "FrontCamp2019AngularModulePart23.github.io", component: ArticlesListComponent , children: itemRoutes },
-  { path: '404', component: NotFoundComponent },
-  { path: '**', redirectTo: '404' }
+  { path: "",
+      children: [
+        { path: "", component: ArticlesListComponent },
+        { path: "detail/:id", component: ArticleDetailComponent },
+        { path: "login", component: LoginFormComponent },
+        { path: "form", component: ArticleFormComponent },
+        { path: "form/:id", component: ArticleFormComponent },
+      ]}
+    //{ path: '404', component: NotFoundComponent },
+    //{ path: '**', redirectTo: '404' }
 ];
 
 @NgModule({
