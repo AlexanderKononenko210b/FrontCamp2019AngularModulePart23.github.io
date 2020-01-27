@@ -1,18 +1,21 @@
 <div class="card card-list m-3">
-    <div>
+    <div *ngIf="isLoading === false">
+        Loading...
+    </div>
+    <div *ngIf="isLoading">
         <div class="card-container">
-            <img class="card-img-top card-list" src={{article.urlToImage}} onError="this.src='https://www.thesun.co.uk/wp-content/uploads/2019/11/RR-GRAPHIC-COMP-ASTEROIDTM7-v2.jpg?strip=all&quality=100&w=1200&h=800&crop=1';" alt="image">
+            <img class="card-img-top card-list" src={{article.urlToImage}} onError="this.src='assets/img/mock-img.png';" alt="image">
         </div>
         <div class="content-container">
             <h5 class="card-title">{{article.title}}</h5>
             <p class="card-text">{{article.content}}</p>
-            <p class="card-text">{{article.publishedAt}}</p>
+            <p class="card-text">{{article.publishedAt | date:"dd/MM/yyyy"}}</p>
             <p class="card-text">{{article.author}}</p>
         </div>
         <div class="card-container">
-            <div class="btn-group-vertical" *ngIf="isCreatedByMy">
-                <button type="button" class="btn btn-outline-primary" (click)="edit(article.id)">Edit</button>
-                <button type="button" class="btn btn-outline-danger" (click)="delete(article.id)">Delete</button>
+            <div class="btn-group-vertical" *ngIf="isCreatedByMe">
+                <button type="button" class="btn btn-outline-primary" (click)="edit(article._id)">Edit</button>
+                <button type="button" class="btn btn-outline-danger" (click)="delete(article._id)">Delete</button>
             </div>
         </div>
     </div>

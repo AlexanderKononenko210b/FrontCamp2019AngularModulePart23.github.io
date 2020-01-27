@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NotificationManagerService } from "../../../services/shared/notification-manager.service";
+import { NotificationManagerService } from "../../../services/shared/notificationSvc/notification-manager.service";
 
 @Component({
   selector: 'app-menu',

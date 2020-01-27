@@ -1,22 +1,26 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NotificationManagerService } from "../../../services/shared/notification-manager.service";
+import { NotificationManagerService } from "../../../services/shared/notificationSvc/notification-manager.service";
 
 import { ArticleModel } from "../../../models/article";
+import { Config } from "../../../config/app.config";
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss']
+  styleUrls: ['./form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FormComponent implements OnInit {
+export class FormComponent {
 
   constructor(
     private notification: NotificationManagerService
   ) { }
 
   @Input() article: ArticleModel;
+  @Input() isLoaded: boolean;
   @Output() onCancel = new EventEmitter();
+  @Output() onSubmit = new EventEmitter();
 
   //controls
   public titleControl: FormControl = new FormControl("", [Validators.required]);
@@ -37,25 +41,19 @@ export class FormComponent implements OnInit {
   })
 
   urlImageSelect(value: boolean) {
-    this.urlToImageControl.setValue(value ? this.article.urlToImage : "/src/assets/img/mock-img.png");
+    this.urlToImageControl.setValue(value ? this.article.urlToImage : Config.PATH_TO_LOCAL_IMG);
   }
 
-  onSubmit() {
-    console.log(this.articleFormGroup.value);
-    this.notification.infoNotification("Feature coming soon");
+  submit() {
+    this.onSubmit.emit(this.articleFormGroup.value)
   }
 
   cancel() {
     this.onCancel.emit();
   }
 
-  ngOnInit() {
-    this.titleControl.setValue(this.article.title);
-    this.descriptionControl.setValue(this.article.description);
-    this.contentControl.setValue(this.article.content);
-    this.urlToImageControl.setValue(this.article.urlToImage);
-    this.publishedAtControl.setValue(this.article.publishedAt);
-    this.authorControl.setValue(this.article.author);
-    this.urlControl.setValue(this.article.url);
+  public formInitialize(article: ArticleModel) {
+    this.article = article;
+    this.articleFormGroup.patchValue(this.article);
   }
 }

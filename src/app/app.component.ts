@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LocalStorageUserModel } from "./models/localStorageUserModel";
+import { LocalStorageUserModel } from "./models/local-storage-user-model";
 
 @Component({
   selector: 'app-root',

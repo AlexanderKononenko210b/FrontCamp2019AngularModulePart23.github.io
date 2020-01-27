@@ -1,45 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { Constants } from "../../config/app.constants";
 import { ArticleModel } from "../../models/article";
-import { articles } from "../../static/articles";
-import { NotificationManagerService } from "../../services/shared/notification-manager.service";
-import { LocalStorageUserModel } from "../../models/localStorageUserModel";
+import { NotificationManagerService } from "../../services/shared/notificationSvc/notification-manager.service";
+import { LocalStorageUserModel } from "../../models/local-storage-user-model";
+import { FormTitle } from "../../config/app.enums";
+import { ArticlesService } from "../../services/articleSvc/articles.service";
+import { HelperService } from "../../services/shared/helperSvc/helper.service";
+import { FormComponent } from "./form/form.component";
 
 @Component({
   selector: 'app-article-form',
   templateUrl: './article-form.component.html',
   styleUrls: ['./article-form.component.scss']
-})
+  })
 export class ArticleFormComponent implements OnInit {
 
   constructor(
     private notification: NotificationManagerService,
     private route: ActivatedRoute,
-    private router: Router
-  ) { }
+    private router: Router,
+    private articleSvc: ArticlesService
+  ) {}
 
-  public article: ArticleModel = new ArticleModel("", "", "", "", "", "", "", "");
+  @ViewChild(FormComponent, {static: true})
+  private form: FormComponent;
+
+  public article: ArticleModel = new ArticleModel("","","","","","","","");
   public id: string = "";
   public updateMode: boolean = false;
-  public title: string = "Create";
+  public title: FormTitle = FormTitle.Create;
   public dateNow: string = "";
+  public isLoaded: boolean = false;
 
   ngOnInit() {
-    const date = new Date(Date.now());
-    this.dateNow = date.toLocaleString();
     this.route.params.subscribe(param => {
-      if(param["id"]) {
-        this.article = articles.find(article => article.id === param["id"]);
-        this.id = this.article ? param["id"] : "";
-        this.updateMode = this.id ? true : false;
-        this.title = this.updateMode ? "Edit" : "Create";
+      this.id = param["id"] ? param["id"] : "";
+      this.updateMode = param["id"] ? true : false;
+      if(this.updateMode) {
+        this.getArticleById(this.id);
       } else {
+        const date = new Date(Date.now());
+        this.dateNow = date.toISOString();
         this.article.author = localStorage.getItem(LocalStorageUserModel.name);
         this.article.publishedAt = this.dateNow;
+        this.setNewArticle();
       }
-    },
-    error => this.notification.errorNotification(error.message));
+    });
+  }
+
+  onSubmit(article: ArticleModel) {
+    this.addUpdateAction(article);
   }
 
   onCancel() {
@@ -48,5 +60,48 @@ export class ArticleFormComponent implements OnInit {
       } else {
         this.router.navigate([``]);
       }
+  }
+
+  private getArticleById(id: string) {
+    this.articleSvc.getCustomArticle(id)
+      .subscribe(result => {
+        this.article = result;
+        this.id = this.article ? id : "";
+        this.updateMode = this.id ? true : false;
+        this.title = this.updateMode ? FormTitle.Edit : FormTitle.Create;
+        this.form.formInitialize(this.article);
+        this.isLoaded = true;
+      },
+      error => this.notification.errorNotification(error));
+  }
+
+  private setNewArticle() {
+    this.form.formInitialize(this.article);
+    this.isLoaded = true;
+  }
+
+  private addUpdateAction(article: ArticleModel) {
+    if(this.updateMode) {
+      article._id = this.id;
+      this.articleSvc.updateArticle(this.id, HelperService.mapArticleToServerUpdateModel(article))
+        .subscribe(result => {
+          if(result.n > 0 && result.nModified > 0 && result.ok > 0) {
+            this.notification.okNotification(Constants.messages[1](this.id));
+          } else if(result.n > 0 && result.ok > 0) {
+            this.notification.alertNotification(Constants.messages[2](this.id));
+          } else {
+            this.notification.alertNotification(Constants.messages[3](this.id));
+          }
+        },
+        error => this.notification.errorNotification(error));
+    } else {
+      this.articleSvc.addNewArticle(article)
+        .subscribe(result => {
+          if(result) {
+            this.notification.okNotification(Constants.messages[0](result._id));
+          }
+        },
+        error => this.notification.errorNotification(error));
+    }
   }
 }

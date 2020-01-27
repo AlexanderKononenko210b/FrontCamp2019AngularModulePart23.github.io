@@ -13,6 +13,7 @@ import { ArticleFormComponent } from './features/article-form/article-form.compo
 import { LoginFormComponent } from './features/login-form/login-form.component';
 import { MenuComponent } from './features/shared/menu/menu.component';
 import { SimpleNotificationsModule } from '../../node_modules/angular2-notifications';
+import { HttpClientModule } from "@angular/common/http";
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ArticleComponent } from './features/articles-list/article/article.component';
@@ -20,6 +21,7 @@ import { OptionsComponent } from './features/articles-list/options/options.compo
 import { LoadMoreComponent } from './features/articles-list/load-more/load-more.component';
 import { ArticleInfoComponent } from './features/article-detail/article-info/article-info.component';
 import { FormComponent } from './features/article-form/form/form.component';
+import { ArticleFilterPipe } from "./services/shared/pipes/filter-pipe.pipe";
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { FormComponent } from './features/article-form/form/form.component';
     OptionsComponent,
     LoadMoreComponent,
     ArticleInfoComponent,
-    FormComponent
+    FormComponent,
+    ArticleFilterPipe
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,8 @@ import { FormComponent } from './features/article-form/form/form.component';
     BrowserAnimationsModule,
     SimpleNotificationsModule.forRoot(),
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,8 @@
 <app-menu></app-menu>
 <app-header></app-header>
 <app-article-info 
-    [article]="article" 
+    [article]="article"
+    [isLoading]="isLoading" 
     (onEdit)="onEdit($event)" 
     (onDelete)="onDelete($event)"></app-article-info>
 <app-footer></app-footer>

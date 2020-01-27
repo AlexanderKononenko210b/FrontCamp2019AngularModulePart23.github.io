@@ -1,5 +1,8 @@
 <div class="container main-container">
-    <form (ngSubmit)="onSubmit()" [formGroup]="articleFormGroup">
+    <div *ngIf="isLoaded === false">
+        Loading...
+    </div>
+    <form *ngIf="isLoaded" (ngSubmit)="submit()" [formGroup]="articleFormGroup">
         <div class="group-container">
             <div class="form-group">
                 <label for="titleInput" id="titleLabel">Title</label>

@@ -1,14 +1,18 @@
 <app-menu></app-menu>
 <app-header [title]="title"></app-header>
-<app-options 
+<app-options
         (onSourceChange)="onSourceChange($event)"
-        (onFilterChange)="onFilterChange($event)"
-        (onFilterClick)="onFilterClick()"
+        (onFilterClick)="onFilterClick($event)"
         (onCheckedByMe)="onCheckedByMe($event)"
+        [selectedSources]="selectedSources"
+        [inputFilter]="inputFilter"
         [sources]="sources">
 </app-options>
-<ul *ngFor="let article of articles;">
-        <app-article [article]="article"></app-article>
+<ul *ngFor="let article of articles | articleFilter: inputFilter;">
+        <app-article 
+                [article]="article"
+                (onDelete)="onDelete($event)">
+        </app-article>
 </ul>
 <app-load-more (onLoadMore)="onLoadMore()"></app-load-more>
 <app-footer></app-footer>

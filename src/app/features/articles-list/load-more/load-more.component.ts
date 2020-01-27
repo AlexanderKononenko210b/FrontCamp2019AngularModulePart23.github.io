@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { NotificationManagerService } from "../../../services/shared/notification-manager.service";
+import { NotificationManagerService } from "../../../services/shared/notificationSvc/notification-manager.service";
 
 @Component({
   selector: 'app-load-more',
