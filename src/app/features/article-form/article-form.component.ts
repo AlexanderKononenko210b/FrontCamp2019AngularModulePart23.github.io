@@ -8,7 +8,6 @@ import { LocalStorageUserModel } from "../../models/local-storage-user-model";
 import { FormTitle } from "../../config/app.enums";
 import { ArticlesService } from "../../services/articleSvc/articles.service";
 import { HelperService } from "../../services/shared/helperSvc/helper.service";
-import { FormComponent } from "./form/form.component";
 
 @Component({
   selector: 'app-article-form',
@@ -24,15 +23,11 @@ export class ArticleFormComponent implements OnInit {
     private articleSvc: ArticlesService
   ) {}
 
-  @ViewChild(FormComponent, {static: true})
-  private form: FormComponent;
-
   public article: ArticleModel = new ArticleModel("","","","","","","","");
   public id: string = "";
   public updateMode: boolean = false;
   public title: FormTitle = FormTitle.Create;
   public dateNow: string = "";
-  public isLoaded: boolean = false;
 
   ngOnInit() {
     this.route.params.subscribe(param => {
@@ -45,7 +40,6 @@ export class ArticleFormComponent implements OnInit {
         this.dateNow = date.toISOString();
         this.article.author = localStorage.getItem(LocalStorageUserModel.name);
         this.article.publishedAt = this.dateNow;
-        this.setNewArticle();
       }
     });
   }
@@ -69,15 +63,8 @@ export class ArticleFormComponent implements OnInit {
         this.id = this.article ? id : "";
         this.updateMode = this.id ? true : false;
         this.title = this.updateMode ? FormTitle.Edit : FormTitle.Create;
-        this.form.formInitialize(this.article);
-        this.isLoaded = true;
       },
       error => this.notification.errorNotification(error));
-  }
-
-  private setNewArticle() {
-    this.form.formInitialize(this.article);
-    this.isLoaded = true;
   }
 
   private addUpdateAction(article: ArticleModel) {

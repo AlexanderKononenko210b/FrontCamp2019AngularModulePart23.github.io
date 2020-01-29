@@ -15,6 +15,7 @@ export class OptionsComponent {
   @Input() sources: string[] = [];
   @Input() selectedSources: string = "";
   @Input() inputFilter: string = "";
+  
   public isChecked: boolean = false;
 
   @Output() onSourceChange = new EventEmitter<string>();

@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectorRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NotificationManagerService } from "../../../services/shared/notificationSvc/notification-manager.service";
 
 import { ArticleModel } from "../../../models/article";
 import { Config } from "../../../config/app.config";
@@ -14,15 +13,25 @@ import { Config } from "../../../config/app.config";
 export class FormComponent {
 
   constructor(
-    private notification: NotificationManagerService
-  ) { }
+    private cdr: ChangeDetectorRef
+  ) {}
+  private _article: ArticleModel;
+  @Input() get article(): ArticleModel {
+    return this._article;
+  }
+  set article(value: ArticleModel) {
+    console.log(value);
+    this._article = value;
+    this.formInitialize(this._article);
+    this.isLoaded = true;
+    this.cdr.detectChanges();
+  }
   
-  @Input() article: ArticleModel;
-  @Input() isLoaded: boolean;
   @Output() onCancel = new EventEmitter();
-  @Output() onSubmit = new EventEmitter();
+  @Output() onSubmit = new EventEmitter<any>();
 
-  //controls
+  public isLoaded: boolean = false;
+
   public titleControl: FormControl = new FormControl("", [Validators.required]);
   public descriptionControl: FormControl = new FormControl("");
   public contentControl: FormControl = new FormControl("", [Validators.required]);
@@ -52,8 +61,7 @@ export class FormComponent {
     this.onCancel.emit();
   }
 
-  public formInitialize(article: ArticleModel) {
-    this.article = article;
-    this.articleFormGroup.patchValue(this.article);
+  private formInitialize(article: ArticleModel) {
+    this.articleFormGroup.patchValue(article);
   }
 }

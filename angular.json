@@ -23,7 +23,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": false,
-            "baseHref": "/",
+            "baseHref": "/FrontCamp2019AngularModulePart23.github.io",
             "assets": [
               "src/favicon.ico",
               "src/assets"

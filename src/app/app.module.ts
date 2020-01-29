@@ -62,8 +62,8 @@ export class AppModule {
   constructor(
     private injector: Injector
   ) {
-      const optionElement = createCustomElement(OptionsComponent, { injector: this.injector });
-      customElements.define('option-example-element', optionElement);
+    const optionElement = createCustomElement(OptionsComponent, { injector: this.injector });
+    customElements.define('option-example-element', optionElement);
   }
   ngDoBootstrap() {
   }

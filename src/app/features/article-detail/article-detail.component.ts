@@ -5,7 +5,6 @@ import { Location } from '@angular/common';
 import { ArticleModel } from "../../models/article";
 import { NotificationManagerService } from '../../services/shared/notificationSvc/notification-manager.service';
 import { ArticlesService } from "../../services/articleSvc/articles.service";
-import { ArticleInfoComponent } from "./article-info/article-info.component";
 import { Constants } from "../../config/app.constants";
 
 @Component({
@@ -26,10 +25,6 @@ export class ArticleDetailComponent implements OnInit {
   public title: string = "";
   public article: ArticleModel;
   public localImgUrl: string = "";
-  public isLoading: boolean = false;
-
-  @ViewChild(ArticleInfoComponent, {static: false})
-  private articleInfo: ArticleInfoComponent;
 
   ngOnInit() {
     this.localImgUrl = "/img/mock-img.png";
@@ -66,8 +61,6 @@ export class ArticleDetailComponent implements OnInit {
         this.title = this.article.publishedAt != ""
           ? this.article.publishedAt
           : "Edit";
-        this.articleInfo.articleInitialize(this.article);
-        this.isLoading = true;
       },
       error => this.notification.errorNotification(error));
   }
