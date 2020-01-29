@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule , FormGroup} from '@angular/forms';
+import { Injector, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { createCustomElement } from '@angular/elements';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,7 +11,6 @@ import { NotFoundComponent } from './features/not-found/not-found.component';
 import { ArticlesListComponent } from './features/articles-list/articles-list.component';
 import { ArticleDetailComponent } from './features/article-detail/article-detail.component';
 import { ArticleFormComponent } from './features/article-form/article-form.component';
-import { LoginFormComponent } from './features/login-form/login-form.component';
 import { MenuComponent } from './features/shared/menu/menu.component';
 import { SimpleNotificationsModule } from '../../node_modules/angular2-notifications';
 import { HttpClientModule } from "@angular/common/http";
@@ -32,7 +32,6 @@ import { ArticleFilterPipe } from "./services/shared/pipes/filter-pipe.pipe";
     ArticlesListComponent,
     ArticleDetailComponent,
     ArticleFormComponent,
-    LoginFormComponent,
     MenuComponent,
     MenuComponent,
     ArticleComponent,
@@ -51,7 +50,21 @@ import { ArticleFilterPipe } from "./services/shared/pipes/filter-pipe.pipe";
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [ArticleFilterPipe],
+  bootstrap: [AppComponent],
+  entryComponents: [
+      ArticleComponent,
+      OptionsComponent
+  ],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    private injector: Injector
+  ) {
+      const optionElement = createCustomElement(OptionsComponent, { injector: this.injector });
+      customElements.define('option-example-element', optionElement);
+  }
+  ngDoBootstrap() {
+  }
+}

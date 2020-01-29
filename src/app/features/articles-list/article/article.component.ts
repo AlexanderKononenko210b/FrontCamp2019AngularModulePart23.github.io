@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ArticleModel } from "../../../models/article";
-import { NotificationManagerService } from "../../../services/shared/notificationSvc/notification-manager.service";
 import { LocalStorageUserModel } from "../../../models/local-storage-user-model";
 import { Config } from "../../../config/app.config";
 
@@ -15,11 +14,17 @@ export class ArticleComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private notification: NotificationManagerService
   ) { }
+  
+  article: ArticleModel;
+  @Input() set _article(value: ArticleModel) {
+    this.article = value;
+  }
+  get _article(): ArticleModel {
+    return this.article;
+  }
 
-  @Input() article: ArticleModel;
-  @Output() onDelete = new EventEmitter<string>();
+  @Input() onDelete = (id: string) => {};
   public localImgUrl: string = "";
   public isCreatedByMe: boolean = false;
 
@@ -32,6 +37,6 @@ export class ArticleComponent implements OnInit {
     this.router.navigate([`/detail/${id}`]);
   }
   delete(id) {
-    this.onDelete.emit(id);
+    this.onDelete(id);
   }
 }

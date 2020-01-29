@@ -6,7 +6,7 @@ import { ArticleModel } from "../../../models/article";
 })
 export class ArticleFilterPipe implements PipeTransform {
 
-    transform(value: ArticleModel[], filter: string): any {
+    public transform(value: ArticleModel[], filter: string): any {
         if(filter && value){
             return value.filter((article) => {
                 return article.title.indexOf(filter) !== -1;

@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Type, Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 
 import { ArticleModel } from "../../models/article";
 import { SourceModel } from "../../models/source-model";
 import { NotificationManagerService } from "../../services/shared/notificationSvc/notification-manager.service";
 import { Constants } from "../../config/app.constants";
 import { UrlBuilderType } from "../../config/app.enums";
-import { LocalStorageUserModel } from "../../models/local-storage-user-model";
 import { ArticlesService } from "../../services/articleSvc/articles.service";
 import { UrlBuilderFactoryService } from "../../services/factories/urlBuilderFactorySvc/url-builder-factory.service";
 import { HelperService } from "../../services/shared/helperSvc/helper.service";
 import { Config } from 'src/app/config/app.config';
+import { ArticleComponent } from "./article/article.component";
+import { ArticleFilterPipe } from "../../services/shared/pipes/filter-pipe.pipe";
 
 @Component({
   selector: 'app-articles-list',
@@ -21,7 +22,9 @@ export class ArticlesListComponent implements OnInit {
   constructor(
     private notification: NotificationManagerService,
     private articleSvc: ArticlesService,
-    private urlBuilderFactory: UrlBuilderFactoryService
+    private urlBuilderFactory: UrlBuilderFactoryService,
+    private factoryResolver: ComponentFactoryResolver,
+    private filterPipe: ArticleFilterPipe
   ) {}
 
   public articles: ArticleModel[] = [];
@@ -33,6 +36,8 @@ export class ArticlesListComponent implements OnInit {
   public selectedSources: string = Constants.sources[0].id;
   private numberOfPage: number = 1;
 
+  @ViewChild("articlesList", {read: ViewContainerRef, static: false})
+  articlesList: ViewContainerRef; 
 
   ngOnInit() {
     this.loadCustomArticles();
@@ -40,9 +45,9 @@ export class ArticlesListComponent implements OnInit {
     this.title = Constants.sources[0].name;
   }
 
-  onSourceChange(selectedSource: string) {
-    this.selectedSources = selectedSource;
-    this.loadArticles(selectedSource);
+  onSourceChange(selectedSource: any) {
+    this.selectedSources = selectedSource.detail;
+    this.loadArticles(this.selectedSources);
   }
 
   onCheckedByMe(value: boolean) {
@@ -52,11 +57,13 @@ export class ArticlesListComponent implements OnInit {
     this.title = Constants.sources[0].name;
   }
 
-  onFilterClick(filter: string) {
-    this.inputFilter = filter;
+  onFilterClick(filter: any) {
+    this.inputFilter = filter.detail;
+    this.articles = this.filterPipe.transform( this.allArticles, this.inputFilter);
+    this.loadArticlesComponentList(ArticleComponent, this.articles);
   }
 
-  onDelete(id: string) {
+  onDelete = (id: string) => {
     this.articleSvc.deleteArticle(id)
       .subscribe(result => {
         if(result.n > 0 && result.ok > 0 && result.deletedCount > 0) {
@@ -69,7 +76,7 @@ export class ArticlesListComponent implements OnInit {
       error => this.notification.errorNotification(error));
   }
 
-  onLoadMore() {
+  onLoadMore = () => {
     let actualNumber = this.numberOfPage;
     const nextNumber = ++actualNumber;
     const existRecords = this.allArticles.length / Config.NUMBER_ARTICLE_TO_SHOW;
@@ -79,9 +86,11 @@ export class ArticlesListComponent implements OnInit {
       this.numberOfPage = nextNumber;
       this.articles = this.allArticles.slice(0, nextNumber * Config.NUMBER_ARTICLE_TO_SHOW + 1);
     }
+
+    this.loadArticlesComponentList(ArticleComponent, this.articles);
   }
 
-  private loadArticles(selectedSource: string) {
+  private loadArticles = (selectedSource: string) => {
     this.title = this.sources.find(source => source.id === selectedSource).name;
     const urlBuilderSvc = this.urlBuilderFactory.create(UrlBuilderType.TopHeadLines);
     let url: string = urlBuilderSvc.build();
@@ -97,6 +106,7 @@ export class ArticlesListComponent implements OnInit {
           .map(apiArticle => HelperService.mapApiToArticle(apiArticle));
         this.articles = this.allArticles
           .slice(0, Config.NUMBER_ARTICLE_TO_SHOW);
+        this.loadArticlesComponentList(ArticleComponent, this.articles);
       },
       error => this.notification.errorNotification(error));
   }
@@ -117,7 +127,20 @@ export class ArticlesListComponent implements OnInit {
         .subscribe(result => {
           this.allArticles = result;
           this.articles = result.slice(0, Config.NUMBER_ARTICLE_TO_SHOW);
+          this.loadArticlesComponentList(ArticleComponent, this.articles);
         },
         error => this.notification.errorNotification(error));
+  }
+
+  private loadArticlesComponentList(type: Type<ArticleComponent>, articles: ArticleModel[]): void {
+    const componentFactory = this.factoryResolver.resolveComponentFactory(type);
+    this.articlesList.clear();
+
+    articles.forEach(article => {
+      const componentRef = this.articlesList.createComponent(componentFactory);
+      const articleInst = componentRef.instance as ArticleComponent;
+      articleInst.article = article;
+      articleInst.onDelete = this.onDelete;
+    })
   }
 }

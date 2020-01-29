@@ -16,7 +16,7 @@ export class FormComponent {
   constructor(
     private notification: NotificationManagerService
   ) { }
-
+  
   @Input() article: ArticleModel;
   @Input() isLoaded: boolean;
   @Output() onCancel = new EventEmitter();
