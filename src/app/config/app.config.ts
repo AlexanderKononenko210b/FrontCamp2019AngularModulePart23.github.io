@@ -3,5 +3,5 @@ export const Config = {
     URL_SOURCES: "https://newsapi.org/v2/sources?",
     API_KEY: "64dbacdde33446cc855b6a5d8d59b450",
     NUMBER_ARTICLE_TO_SHOW: 5,
-    PATH_TO_LOCAL_IMG: 'dist/assets/img/mock-img.png'
+    PATH_TO_LOCAL_IMG: 'FrontCamp2019AngularModulePart23.github.io/dist/assets/img/mock-img.png'
 }
